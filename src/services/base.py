@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, insert
 
 from database import async_session_maker
 
@@ -26,3 +26,10 @@ class BaseService:
             query = select(cls.model).filter_by(id=model_id)
             res = await session.execute(query)
             return res.scalar_one_or_none()
+
+    @classmethod
+    async def add_row(cls, **data):
+        async with async_session_maker() as session:
+            stmt = insert(cls.model).values(data)
+            await session.execute(stmt)
+            await session.commit()
