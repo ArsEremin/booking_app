@@ -1,5 +1,5 @@
-from bookings.models import Booking
-from services.base import BaseService
+from src.bookings.models import Booking
+from src.services.base import BaseService
 
 
 class BookingService(BaseService):

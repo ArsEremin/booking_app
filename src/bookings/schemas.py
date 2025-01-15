@@ -13,6 +13,7 @@ class BookingSchema(BaseModel):
     total_cost: int
     total_days: int
 
-    class Config:
-        model_config = ConfigDict(extra="forbid")
-        orm_mode = True
+    model_config = ConfigDict(
+        extra="forbid",  # дополнительные аргументы запрещены
+        from_attributes=True  # для конвертации orm-моделей
+    )

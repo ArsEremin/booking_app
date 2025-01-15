@@ -1,5 +1,5 @@
-from services.base import BaseService
-from users.models import User
+from src.services.base import BaseService
+from src.users.models import User
 
 
 class UserService(BaseService):

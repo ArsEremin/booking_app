@@ -5,7 +5,7 @@ from datetime import date
 
 from pydantic import BaseModel
 
-from bookings.shemas import BookingSchema
+from src.bookings.schemas import BookingSchema
 from src.bookings.routers import router as router_bookings
 from src.users.routers import router as router_users
 

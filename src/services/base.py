@@ -1,6 +1,6 @@
 from sqlalchemy import select, insert
 
-from database import async_session_maker
+from src.database import async_session_maker
 
 
 class BaseService:
@@ -10,6 +10,13 @@ class BaseService:
     async def get_all_rows(cls):
         async with async_session_maker() as session:
             query = select(cls.model)
+            res = await session.execute(query)
+            return res.scalars().all()
+
+    @classmethod
+    async def get_all_rows_by_filter(cls, **filter_by):
+        async with async_session_maker() as session:
+            query = select(cls.model).filter_by(**filter_by)
             res = await session.execute(query)
             return res.scalars().all()
 

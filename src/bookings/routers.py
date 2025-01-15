@@ -1,7 +1,11 @@
-from fastapi import APIRouter
+from typing import Annotated
 
-from bookings.service import BookingService
-from bookings.shemas import BookingSchema
+from fastapi import APIRouter, Depends
+
+from src.bookings.service import BookingService
+from src.bookings.schemas import BookingSchema
+from src.users.dependencies import get_current_user
+from src.users.models import User
 
 router = APIRouter(
     prefix="/bookings",
@@ -10,8 +14,8 @@ router = APIRouter(
 
 
 @router.get("")
-async def get_bookings() -> list[BookingSchema]:
-    return await BookingService.get_all_rows()
+async def get_bookings(user: Annotated[User, Depends(get_current_user)]) -> list[BookingSchema]:
+    return await BookingService.get_all_rows_by_filter(user_id=user.id)
 
 
 @router.get("/{booking_id}")
