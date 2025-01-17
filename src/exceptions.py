@@ -1,21 +1,34 @@
 from fastapi import HTTPException, status
 
-UserExistsException = HTTPException(
-    status_code=status.HTTP_409_CONFLICT,
-    detail="user already exists"
-)
 
-InvalidAuthDataException = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="invalid email or password"
-)
+class BaseAuthException(HTTPException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    detail = "auth exception"
 
-InvalidTokenException = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="Invalid token"
-)
+    def __init__(self):
+        super().__init__(status_code=self.status_code, detail=self.detail)
 
-TokenExpiredException = HTTPException(
-    status_code=status.HTTP_401_UNAUTHORIZED,
-    detail="token expired"
-)
+
+class UserExistsException(BaseAuthException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "user already exists"
+
+
+class InvalidAuthDataException(BaseAuthException):
+    detail = "invalid email or password"
+
+
+class InvalidTokenException(BaseAuthException):
+    detail = "Invalid token"
+
+
+class TokenExpiredException(BaseAuthException):
+    detail = "token expired"
+
+
+class BookingException(HTTPException):
+    status_code = status.HTTP_409_CONFLICT
+    detail = "no free rooms"
+
+    def __init__(self):
+        super().__init__(status_code=self.status_code, detail=self.detail)
