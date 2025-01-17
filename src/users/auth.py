@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from passlib.context import CryptContext
 from pydantic import EmailStr
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
 from src.users.service import UserService
@@ -28,8 +29,8 @@ def create_access_token(data: dict) -> str:
     return encoded_jwt
 
 
-async def auth_user(email: EmailStr, password: str):
-    user = await UserService.get_by_filter(email=email)
+async def auth_user(session: AsyncSession, email: EmailStr, password: str):
+    user = await UserService.get_by_filter(session, email=email)
     if not user or not verify_password(password, user.hashed_password):
         return None
     return user

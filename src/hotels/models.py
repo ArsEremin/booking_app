@@ -1,7 +1,7 @@
 from sqlalchemy import JSON, ForeignKey
-from sqlalchemy.orm import MappedColumn, mapped_column
+from sqlalchemy.orm import MappedColumn, mapped_column, relationship
 
-from database import Base
+from src.database import Base
 
 
 class Hotel(Base):
@@ -14,6 +14,10 @@ class Hotel(Base):
     rooms_quantity: MappedColumn[int] = mapped_column(nullable=False)
     image_id: MappedColumn[int]
 
+    rooms: MappedColumn["Room"] = relationship(
+        back_populates="hotel"
+    )
+
 
 class Room(Base):
     __tablename__ = "room"
@@ -25,7 +29,11 @@ class Room(Base):
     )
     name: MappedColumn[str] = mapped_column(nullable=False)
     description: MappedColumn[str] = mapped_column(nullable=True)
-    price: MappedColumn[str] = mapped_column(nullable=False)
+    price: MappedColumn[int] = mapped_column(nullable=False)
     services = mapped_column(JSON)
     quantity: MappedColumn[int] = mapped_column(nullable=False)
     image_id: MappedColumn[int]
+
+    hotel: MappedColumn["Hotel"] = relationship(
+        back_populates="rooms"
+    )
