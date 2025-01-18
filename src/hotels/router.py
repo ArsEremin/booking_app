@@ -2,6 +2,7 @@ from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Query, Depends, HTTPException, status
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
@@ -15,6 +16,7 @@ router = APIRouter(
 
 
 @router.get("", response_model=list[HotelWithNumSchema])
+@cache(expire=30)
 async def get_hotels(
     session: Annotated[AsyncSession, Depends(get_async_session)],
     location: Annotated[str, Query(max_length=100)],

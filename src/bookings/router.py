@@ -30,7 +30,7 @@ def get_booking(booking_id):
     pass
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def add_booking(
     session: Annotated[AsyncSession, Depends(get_async_session)],
     room_id: int,

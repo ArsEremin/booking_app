@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Response, Body, Depends
+from fastapi import APIRouter, Response, Body, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
@@ -17,7 +17,7 @@ router = APIRouter(
 )
 
 
-@router.post("/register")
+@router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(
     session: Annotated[AsyncSession, Depends(get_async_session)],
     user_data: UserAuthSchema
