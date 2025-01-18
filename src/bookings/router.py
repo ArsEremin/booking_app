@@ -8,6 +8,7 @@ from src.bookings.service import BookingService
 from src.bookings.schemas import BookingSchema
 from src.database import get_async_session
 from src.exceptions import BookingException
+from src.tasks.tasks import send_confirmation_email
 from src.users.dependencies import get_current_user
 from src.users.models import User
 
@@ -41,6 +42,9 @@ async def add_booking(
     booking = await BookingService.add(session, user.id, room_id, date_from, date_to)
     if not booking:
         raise BookingException
+    booking_dict = BookingSchema.model_validate(booking).dict()
+    send_confirmation_email.delay(booking_dict, user.email)
+    return booking_dict
 
 
 @router.delete("/{booking_id}", dependencies=[Depends(get_current_user)], status_code=status.HTTP_204_NO_CONTENT)
