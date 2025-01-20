@@ -1,0 +1,10 @@
+[
+    {
+        "email": "fedor@moloko.ru",
+        "hashed_password": "fedor"
+    },
+    {
+        "email": "sharik@moloko.ru",
+        "hashed_password": "sharik"
+    }
+]
