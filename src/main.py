@@ -5,9 +5,13 @@ from redis import asyncio as aioredis
 
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from sqladmin import Admin
 
+from src.adminpanel.auth import authentication_backend
+from src.adminpanel.views import UserView, BookingView, RoomView, HotelView
 from src.bookings.router import router as router_bookings
 from src.config import settings
+from src.database import engine
 from src.users.router import router as router_users
 from src.hotels.rooms.router import router as router_rooms
 from src.pages.images.router import router as router_fronted
@@ -42,3 +46,9 @@ async def startup():
         decode_responses=True
     )
     FastAPICache.init(RedisBackend(redis), prefix="cache")
+
+admin = Admin(app, engine, authentication_backend=authentication_backend)
+admin.add_view(UserView)
+admin.add_view(BookingView)
+admin.add_view(RoomView)
+admin.add_view(HotelView)
