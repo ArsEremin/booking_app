@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import select, or_, func
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.bookings.models import Booking
@@ -53,4 +53,3 @@ class HotelService(BaseService):
                 HotelWithNumSchema(free_rooms_number=free_rooms_num, **HotelSchema.model_validate(hotel).dict())
             )
         return free_hotels_dto
-

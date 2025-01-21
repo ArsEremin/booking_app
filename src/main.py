@@ -1,20 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from redis import asyncio as aioredis
-
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from redis import asyncio as aioredis
 from sqladmin import Admin
 
 from src.adminpanel.auth import authentication_backend
-from src.adminpanel.views import UserView, BookingView, RoomView, HotelView
+from src.adminpanel.views import BookingView, HotelView, RoomView, UserView
 from src.bookings.router import router as router_bookings
 from src.config import settings
 from src.database import engine
-from src.users.router import router as router_users
 from src.hotels.rooms.router import router as router_rooms
 from src.pages.images.router import router as router_fronted
+from src.users.router import router as router_users
 
 app = FastAPI()
 
@@ -33,7 +32,7 @@ app.add_middleware(
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Set-Cookie", "Authorization","Access-Control-Allow-Headers",
+    allow_headers=["Content-Type", "Set-Cookie", "Authorization", "Access-Control-Allow-Headers",
                    "Access-Control-Allow-Origin"]
 )
 

@@ -1,7 +1,7 @@
 from sqladmin import ModelView
 
 from src.bookings.models import Booking
-from src.hotels.models import Room, Hotel
+from src.hotels.models import Hotel, Room
 from src.users.models import User
 
 

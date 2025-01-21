@@ -1,11 +1,11 @@
 from datetime import date
 
-from sqlalchemy import select, or_, func
+from sqlalchemy import func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.bookings.models import Booking
 from src.hotels.models import Room
-from src.hotels.rooms.schemas import RoomSchema, ExtendedRoomSchema
+from src.hotels.rooms.schemas import ExtendedRoomSchema, RoomSchema
 from src.services.base import BaseService
 
 

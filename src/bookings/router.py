@@ -4,8 +4,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.bookings.service import BookingService
 from src.bookings.schemas import BookingSchema
+from src.bookings.service import BookingService
 from src.database import get_async_session
 from src.exceptions import BookingException
 from src.tasks.tasks import send_confirmation_email

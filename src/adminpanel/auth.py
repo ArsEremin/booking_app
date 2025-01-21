@@ -1,6 +1,5 @@
 from fastapi import Request, Response
 from fastapi.responses import RedirectResponse
-
 from sqladmin.authentication import AuthenticationBackend
 
 from src.database import get_async_session

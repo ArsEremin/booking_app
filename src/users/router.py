@@ -1,11 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Response, Body, Depends, status
+from fastapi import APIRouter, Body, Depends, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
-from src.exceptions import UserExistsException, InvalidAuthDataException
-from src.users.auth import get_password_hash, auth_user, create_access_token
+from src.exceptions import InvalidAuthDataException, UserExistsException
+from src.users.auth import auth_user, create_access_token, get_password_hash
 from src.users.dependencies import get_current_user
 from src.users.models import User
 from src.users.schemas import UserAuthSchema

@@ -1,13 +1,13 @@
-from datetime import timezone, datetime
+from datetime import datetime, timezone
 from typing import Annotated
 
 import jwt
-from fastapi import Cookie, HTTPException, status, Depends
+from fastapi import Cookie, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.config import settings
 from src.database import get_async_session
-from src.exceptions import TokenExpiredException, InvalidTokenException
+from src.exceptions import InvalidTokenException, TokenExpiredException
 from src.users.service import UserService
 
 
