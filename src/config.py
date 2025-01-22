@@ -11,6 +11,7 @@ class Settings(BaseSettings):
     DB_NAME: str
 
     MODE: Literal["DEV", "TEST", "PROD"]
+    LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING"]
 
     SMTP_HOST: str
     SMTP_PORT: str

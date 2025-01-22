@@ -1,13 +1,16 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
+from fastapi_versioning import version
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.bookings.schemas import BookingSchema
 from src.bookings.service import BookingService
 from src.database import get_async_session
 from src.exceptions import BookingException
+from src.logger import logger
 from src.tasks.tasks import send_confirmation_email
 from src.users.dependencies import get_current_user
 from src.users.models import User
@@ -27,8 +30,12 @@ async def get_bookings(
 
 
 @router.get("/{booking_id}")
-def get_booking(booking_id):
-    pass
+async def get_booking(
+    user: Annotated[User, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+    booking_id: int
+) -> BookingSchema:
+    return await BookingService.get_by_filter(session, id=booking_id, user_id=user.id)
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
@@ -39,12 +46,18 @@ async def add_booking(
     date_to: date,
     user: Annotated[User, Depends(get_current_user)]
 ):
-    booking = await BookingService.add(session, user.id, room_id, date_from, date_to)
-    if not booking:
-        raise BookingException
-    booking_dict = BookingSchema.model_validate(booking).dict()
-    send_confirmation_email.delay(booking_dict, user.email)
-    return booking_dict
+    try:
+        booking = await BookingService.add(session, user.id, room_id, date_from, date_to)
+        if not booking:
+            raise BookingException
+        booking_dict = BookingSchema.model_validate(booking).dict()
+        send_confirmation_email.delay(booking_dict, user.email)
+        return booking_dict
+    except SQLAlchemyError:
+        msg = "Invalid transaction"
+        extra = {"user_id": user.id, "room_id": room_id, "date_from": date_from, "date_to": date_to}
+        logger.error(msg, extra=extra, exc_info=True)
+        return Response(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @router.delete("/{booking_id}", dependencies=[Depends(get_current_user)], status_code=status.HTTP_204_NO_CONTENT)

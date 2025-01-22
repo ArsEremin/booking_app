@@ -56,7 +56,6 @@ class BookingService(BaseService):
             get_price = select(Room.price).filter_by(id=room_id)
             price = await session.execute(get_price)
             price = price.scalar()
-
             add_booking = (
                 insert(Booking)
                 .values(
