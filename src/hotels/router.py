@@ -6,7 +6,7 @@ from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database import get_async_session
-from src.hotels.schemas import HotelWithNumSchema
+from src.hotels.schemas import HotelSchema, HotelWithNumSchema
 from src.hotels.service import HotelService
 
 router = APIRouter(
@@ -27,7 +27,7 @@ async def get_hotels(
     return hotels
 
 
-@router.get("/{hotel_id}")
+@router.get("/{hotel_id}", response_model=HotelSchema)
 async def get_hotel(
     session: Annotated[AsyncSession, Depends(get_async_session)],
     hotel_id: int

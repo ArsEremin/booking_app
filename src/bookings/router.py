@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Response, status
+from fastapi import APIRouter, Depends, Response, status, HTTPException
 from fastapi_versioning import version
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,12 +30,16 @@ async def get_bookings(
 
 
 @router.get("/{booking_id}")
+@version(2)
 async def get_booking(
     user: Annotated[User, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_async_session)],
     booking_id: int
 ) -> BookingSchema:
-    return await BookingService.get_by_filter(session, id=booking_id, user_id=user.id)
+    booking = await BookingService.get_by_filter(session, id=booking_id, user_id=user.id)
+    if not booking:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="booking is not found")
+    return booking
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)

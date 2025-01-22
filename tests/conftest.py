@@ -21,7 +21,7 @@ from src.bookings.models import Booking
 
 
 @pytest.fixture(scope="session")
-def event_loop(request):
+def event_loop():
     return asyncio.get_event_loop()
 
 
@@ -33,6 +33,7 @@ async def session() -> AsyncSession:
 
 @pytest.fixture(scope="session", autouse=True)
 async def setup_db(session: AsyncSession):
+    print(settings.MODE)
     assert settings.MODE == "TEST"
 
     async with engine.begin() as conn:
@@ -71,7 +72,7 @@ async def async_client():
 async def auth_client():
     async with AsyncClient(app=fastapi_app, base_url="http://test") as ac:
         await ac.post(
-            url="/users/login",
+            url="/v1/users/login",
             json={
                 "email": "fedor@moloko.ru",
                 "password": "fedor"

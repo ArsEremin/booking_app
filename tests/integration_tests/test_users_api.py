@@ -3,6 +3,10 @@ from httpx import AsyncClient
 
 
 class TestUsersAPI:
+    @property
+    def get_url(self):
+        return "/v1/users"
+
     @pytest.mark.parametrize(
         "email, password, status_code",
         [
@@ -13,7 +17,7 @@ class TestUsersAPI:
     )
     async def test_register_user(self, async_client: AsyncClient, email, password, status_code):
         response = await async_client.post(
-            url="/users/register",
+            url=f"{self.get_url}/register",
             json={
                 "email": email,
                 "password": password
@@ -31,7 +35,7 @@ class TestUsersAPI:
     )
     async def test_login_user(self, async_client: AsyncClient, email, password, status_code):
         response = await async_client.post(
-            url="/users/login",
+            url=f"{self.get_url}/login",
             json={
                 "email": email,
                 "password": password
