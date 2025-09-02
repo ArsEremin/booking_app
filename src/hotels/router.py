@@ -1,9 +1,10 @@
 from datetime import date
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status, UploadFile
 from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
+import pandas as pd
 
 from src.database import get_async_session
 from src.hotels.schemas import HotelSchema, HotelWithNumSchema
@@ -36,3 +37,27 @@ async def get_hotel(
     if not hotel:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="hotel is not found")
     return hotel
+
+
+@router.post("/upload_hotels")
+async def upload_hotels(
+    session: Annotated[AsyncSession, Depends(get_async_session)],
+    file: UploadFile
+) -> dict:
+    hotels_data = pd.read_csv(file.file)
+
+    for _, hotel_data in hotels_data.iterrows():
+        hotel = {
+            "name": hotel_data["name"],
+            "location": hotel_data["location"],
+            "services": hotel_data["services"].split(','),
+            "rooms_quantity": hotel_data["rooms_quantity"],
+            "image_id": hotel_data["image_id"]
+        }
+
+        await HotelService.add_row(
+            session,
+            **hotel
+        )
+
+    return {"status": "hotels uploaded successfully"}

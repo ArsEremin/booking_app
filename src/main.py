@@ -9,6 +9,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_versioning import VersionedFastAPI
 from redis import asyncio as aioredis
 from sqladmin import Admin
+import uvicorn
 
 from src.adminpanel.auth import authentication_backend
 from src.adminpanel.views import BookingView, HotelView, RoomView, UserView
@@ -77,3 +78,11 @@ async def add_process_time_log(request: Request, call_next):
     process_time = time.time() - start_time
     logger.info("Request process time", extra={"process_time": round(process_time, 3)})
     return response
+
+
+if __name__ == "__main__":
+    uvicorn.run(
+        app="src.main:app",
+        host="127.0.0.1",
+        port=8080
+    )
