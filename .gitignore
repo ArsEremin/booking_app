@@ -175,3 +175,4 @@ src/.DS_Store
 .DS_Store
 .prod.env
 .test.env
+.render.env
